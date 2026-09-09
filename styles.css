@@ -2,62 +2,63 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
 
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        'Segoe UI',
-        Roboto,
-        Oxygen,
-        Ubuntu,
-        Cantarell,
-        'Open Sans',
-        'Helvetica Neue',
-        sans-serif;
+:root {
+    --red: #CFA54B;
+    --red-dark: #CFA54B;
+    --gold: #CFA54B;
+    --gold-light: #CFA54B;
+    --black: #111111;
+    --white: #ffffff;
+    --glass: rgba(0, 0, 0, 0.68);
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #111;
+    overflow-x: hidden;
 }
 
 
-/* =========================================
+/* =========================================================
    FLIP SYSTEM
-========================================= */
+========================================================= */
 
 .flip-container {
     width: 100%;
     min-height: 100vh;
-    perspective: 1200px;
+    perspective: 1600px;
 }
-
 
 .flip-card {
     position: relative;
-
     width: 100%;
     min-height: 100vh;
 
     transform-style: preserve-3d;
-
-    transition:
-        transform 1s ease-in-out;
+    transition: transform 1s cubic-bezier(.65, 0, .35, 1);
 }
-
 
 .flip-card.flipped {
     transform: rotateY(180deg);
 }
 
 
-/* =========================================
+/* =========================================================
    FRONT + BACK
-========================================= */
+========================================================= */
 
 .flip-front,
 .flip-back {
-
     position: absolute;
-    margin: 0px;
-    top: 0;
-    left: 0;
+    inset: 0;
 
     width: 100%;
     min-height: 100vh;
@@ -66,735 +67,679 @@
     -webkit-backface-visibility: hidden;
 }
 
-
 .flip-front {
     transform: rotateY(0deg);
 }
 
-
 .flip-back {
-
     transform: rotateY(180deg);
 
-    background-color: white;
-
-    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at top,
+            #ffffff 0%,
+            #f5f5f5 55%,
+            #e8e8e8 100%
+        );
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
-    justify-content: center;
+    justify-content: flex-start;
 
     text-align: center;
 
-    padding: 30px;
+    overflow-y: auto;
+    padding: 30px 20px 50px;
 }
 
 
-/* =========================================
+/* =========================================================
+   FRONT PAGE
+========================================================= */
+
+.header {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("image/Foyer_landscape.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* =========================================================
+   LOGIN / WELCOME CARD
+========================================================= */
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(90%, 520px);
+    padding: 45px 40px;
+    background: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 28px;
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(11px);
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    text-align: center;
+
+    animation: cardAppear 0.8s ease;
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -46%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+
+/* =========================================================
+   WELCOME TITLE
+========================================================= */
+
+.container h1 {
+    color: white;
+    font-size: clamp(30px, 6vw, 50px);
+    font-weight: 650;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    text-shadow:
+        0 3px 15px rgba(0, 0, 0, 0.4);
+}
+
+.container p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(15px, 3vw, 19px);
+    margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+input {
+    display: block;
+    width: 100%;
+    padding: 15px 18px;
+    margin: 15px auto 0;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #222;
+    font-size: 17px;
+    text-align: center;
+    outline: none;
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+input::placeholder {
+    color: #888;
+    font-size: 15px;
+}
+
+input:focus {
+    border-color: var(--gold);
+
+    box-shadow:
+        0 0 0 4px rgba(207, 165, 75, 0.18);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+button {
+    display: block;
+    width: 100%;
+    padding: 15px 24px;
+    margin: 20px auto 0;
+    border: none;
+    border-radius: 14px;
+    background:
+        linear-gradient(
+            135deg,
+            #CFA54B,
+            #CFA54B
+        );
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 25px rgba(207, 165, 75, 0.35);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-3px);
+
+    background:
+        linear-gradient(
+            135deg,
+            #CFA54B,
+            #CFA54B
+        );
+
+    box-shadow:
+        0 15px 30px rgba(207, 165, 75, 0.45);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================================================
+   ERROR / MESSAGE
+========================================================= */
+
+#showText {
+    min-height: 24px;
+    margin-top: 15px;
+    color: #ffb3b3;
+    font-size: 14px;
+}
+
+
+/* =========================================================
    HIDDEN
-========================================= */
+========================================================= */
 
 .hidden {
     display: none !important;
 }
 
 
-/* =========================================
-   BACKGROUND
-========================================= */
+/* =========================================================
+   BACK SIDE / FLOOR PLAN
+========================================================= */
 
-.bg-img {
-
-    position: relative;
-
-    background-image:
-        url("image/Caltex.jpeg");
-
-    background-size: cover;
-
-    background-position: center;
-
-    background-repeat: no-repeat;
-
+.floor_plan_container {
     width: 100%;
-
-    min-height: 100vh;
-}
-
-
-/* =========================================
-   MAIN CONTAINER
-========================================= */
-
-.container {
-
-    position: absolute;
-
-    top:
-        clamp(
-            65%,
-            2vw + 60%,
-            72%
-        );
-
-    left: 50%;
-
-    transform:
-        translate(
-            -50%,
-            -50%
-        );
-
-    padding:
-        clamp(
-            25px,
-            6vw + 5px,
-            100px
-        )
-        clamp(
-            20px,
-            7vw + 5px,
-            100px
-        );
-
-    background:
-        rgba(
-            0,
-            0,
-            0,
-            0.6
-        );
-
-    border-radius:
-        clamp(
-            12px,
-            3vw,
-            40px
-        );
-
-    box-shadow:
-        1px
-        6px
-        45px
-        10px
-        #000000;
-
-    text-align: center;
-}
-
-
-/* =========================================
-   HEADINGS
-========================================= */
-
-h1 {
-
-    font-size:
-        clamp(
-            40px,
-            5vw + 1rem,
-            60px
-        );
-
-    color: white;
-}
-
-
-/* =========================================
-   BUTTON
-========================================= */
-
-button {
-
-    display: block;
-
-    padding:
-        8px
-        clamp(
-            75px,
-            10vw,
-            135px
-        );
-
-    margin: 20px auto 0;
-
-    border-radius: 20px;
-
-    border: none;
-
-    cursor: pointer;
-
-    color: white;
-
-    font-weight: bold;
-
-    font-size: 22px;
-
-    transition:
-        ease-in-out 0.4s;
-
-    box-shadow:
-        1px
-        6px
-        37px
-        10px
-        #000000;
-
-    background-color:
-        #e13347;
-}
-
-
-button:hover {
-
-    opacity: 1;
-
-    background-color:
-        #f30925;
-}
-
-
-button:active {
-
-    opacity: 0.7;
-
-    background-color:
-        #f50723;
-}
-
-
-button:disabled {
-
-    opacity: 0.6;
-
-    cursor: not-allowed;
-}
-
-
-/* =========================================
-   INPUT
-========================================= */
-
-input {
-
-    display: block;
-
-    margin: 20px auto 0;
-
-    padding:
-        10px
-        clamp(
-            55px,
-            6vw + 10px,
-            100px
-        );
-
-    border-radius: 8px;
-
-    border: none;
-
-    font-size: 18px;
+    max-width: 1000px;
 
     text-align: center;
 
-    outline: none;
+    margin-bottom: 10px;
 }
 
-
-::placeholder {
-
-    color: grey;
-
-    font-size: 1.2em;
-}
-
-
-/* =========================================
-   PARAGRAPH
-========================================= */
-
-p {
-
-    color: white;
-}
-
-
-/* =========================================
-   MENU
-========================================= */
-
-.button:hover {
-
-    opacity: 0.5;
-}
-
-
-.menu button {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-}
-
-
-/* =========================================
-   320px
-========================================= */
-
-@media (min-width: 320px) {
-
-    .header {
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-    }
-
-
-    .bg-img {
-
-        background-image:
-            url("image/Caltex Portrait.jpg");
-
-        background-size: cover;
-
-        background-position: center;
-
-        max-width: auto;
-
-        max-height: auto;
-    }
-
-
-    button {
-
-        margin-top: 20px;
-
-        border-radius: 20px;
-
-        border: none;
-
-        cursor: pointer;
-
-        color: white;
-
-        font-weight: bold;
-
-        font-size: 15px;
-
-        background-color:
-            #e13347;
-    }
-
-}
-
-
-/* =========================================
-   375px
-========================================= */
-
-@media (min-width: 374px) {
-
-    .header {
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-    }
-
-
-    .bg-img {
-
-        background-image:
-            url("image/Caltex Portrait.jpg");
-
-        background-size: cover;
-
-        background-position: center;
-
-        max-width: auto;
-
-        max-height: auto;
-    }
-
-
-    button {
-
-        margin-top: 20px;
-
-        border-radius: 20px;
-
-        border: none;
-
-        cursor: pointer;
-
-        color: white;
-
-        font-weight: bold;
-
-        font-size: 15px;
-
-        background-color:
-            #e13347;
-    }
-
-}
-
-
-/* =========================================
-   425px
-========================================= */
-
-@media (max-width: 425px) {
-
-    .header {
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-    }
-
-
-    .bg-img {
-
-        background-image:
-            url("image/Caltex Portrait.jpg");
-
-        background-size: cover;
-
-        background-position: center;
-
-        max-width: auto;
-
-        max-height: auto;
-    }
-
-
-    button {
-
-        margin-top: 20px;
-
-        border-radius: 20px;
-
-        border: none;
-
-        cursor: pointer;
-
-        color: white;
-
-        font-weight: bold;
-
-        font-size: 15px;
-
-        background-color:
-            #e13347;
-    }
-
-
-    .container {
-
-        width: 90%;
-
-        padding:
-            30px 20px;
-    }
-
-
-    input {
-
-        width: 100%;
-
-        padding: 12px;
-
-        font-size: 16px;
-    }
-
-
-    .container button {
-
-        width: 100%;
-
-        padding: 12px;
-    }
-
-}
-
-
-/* =========================================
-   768px
-========================================= */
-
-@media (min-width: 768px) {
-
-    .header {
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-    }
-
-
-    .bg-img {
-
-        background-image:
-            url("image/Caltex Portrait.jpg");
-
-        background-size: cover;
-
-        background-position: center;
-
-        max-width: auto;
-
-        max-height: auto;
-    }
-
-
-    button {
-
-        margin-top: 20px;
-
-        border-radius: 20px;
-
-        border: none;
-
-        cursor: pointer;
-
-        color: white;
-
-        font-weight: bold;
-
-        font-size: 15px;
-
-        background-color:
-            #e13347;
-    }
-
-}
-
-
-/* =========================================
-   1024px
-========================================= */
-
-@media (min-width: 1024px) {
-
-    .header {
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-    }
-
-
-    .bg-img {
-
-        background-image:
-            url("image/Caltex.jpeg") !important;
-
-        background-size: cover;
-
-        background-position: center;
-
-        max-width: auto;
-
-        max-height: auto;
-    }
-
-
-    button {
-
-        margin-top: 20px;
-
-        border-radius: 20px;
-
-        border: none;
-
-        cursor: pointer;
-
-        color: white;
-
-        font-weight: bold;
-
-        font-size: 15px;
-
-        background-color:
-            #e13347;
-    }
-
-}
-
-
-/* =========================================
-   PARKING TITLE
-========================================= */
-
-.parking_title {
-
-    display: flex;
-
-    flex-direction: column;
-
-    text-align: center;
-
-    flex-wrap: nowrap;
-
+.floor_plan_title {
     color: black;
-
-    font-size:
-        clamp(
-            30px,
-            6vw,
-            80px
-        );
-
-    line-height: 1.1;
-
-    margin: 0;
+    font-size: clamp(30px, 6vw, 58px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
 }
 
 
-/* =========================================
-   PARKING CONTAINER
-========================================= */
+/* =========================================================
+   FLOOR PLAN
+========================================================= */
 
-.parking_container {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    width: 100%;
-}
-
-
-/* =========================================
-   PARKING QR
-========================================= */
-
-.parking_qr {
-
-    position: relative;
-
-    left: auto;
-
-    top: auto;
-
-    transform: none;
-
+.floor_plan {
     display: block;
-
-    width:
-        clamp(
-            200px,
-            35vw,
-            400px
-        );
-
+    width: min(92vw, 800px);
     height: auto;
-
-    margin: 30px auto;
+    margin: 0 auto;
+    filter:
+        drop-shadow(
+            0 15px 25px rgba(0, 0, 0, 0.12)
+        );
 }
 
 
-/* =========================================
-   FINAL TABLE NUMBER
-========================================= */
+/* =========================================================
+   FINAL TABLE RESULT
+========================================================= */
 
-#finalTableNumber {
+.flip-back > h1 {
+    color: var(--black) !important;
 
-    color: black;
+    font-size: clamp(22px, 4vw, 34px);
 
-    font-size:
-        clamp(
-            35px,
-            6vw,
-            60px
-        );
-
-    font-weight: bold;
-
-    margin-top: 10px;
-}
-
-
-/* =========================================
-   BACK SIDE PARAGRAPH
-========================================= */
-
-.flip-back p {
-
-    color: black;
-
-    font-size:
-        clamp(
-            16px,
-            3vw,
-            24px
-        );
+    font-weight: 600;
 
     margin-top: 15px;
 }
 
+#finalTableNumber {
+    display: inline-block;
 
-/* =========================================
-   MOBILE BACK SIDE
-========================================= */
+    color: var(--red);
 
-@media (max-width: 425px) {
+    font-size: clamp(42px, 8vw, 70px);
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    margin: 5px 0 10px;
+
+    padding: 5px 25px;
+
+    border-bottom: 5px solid var(--gold);
+}
+
+.flip-back p {
+    color: #444;
+    font-size: clamp(14px, 3vw, 19px);
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   FLOOR PLAN SVG STYLING
+========================================================= */
+
+.border-wall {
+    stroke: #222;
+    stroke-width: 4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.thin-wall {
+    stroke: #777;
+    stroke-width: 2;
+    fill: none;
+}
+
+.stage {
+    fill: #eeeeee;
+    stroke: #333;
+    stroke-width: 2;
+}
+
+.av-console {
+    fill: #f8f8f8;
+    stroke: #555;
+    stroke-width: 2;
+}
+
+.walkway {
+    fill: var(--red);
+    opacity: 0.92;
+}
+
+.table-circle {
+    fill: #ffffff;
+    stroke: #333;
+    stroke-width: 1.5;
+}
+
+.chair-circle {
+    fill: #ffffff;
+    stroke: #777;
+    stroke-width: 1;
+}
+
+.vip-table {
+    fill: #f5d76e;
+    stroke: #b8860b;
+    stroke-width: 2;
+}
+
+.text-main {
+    font-family:
+        "Segoe UI",
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+
+    fill: #1e293b;
+
+    font-weight: 600;
+
+    text-anchor: middle;
+}
+
+.text-sub {
+    font-family:
+        "Segoe UI",
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    font-size: 11px;
+
+    fill: #475569;
+
+    text-anchor: middle;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-left {
+    text-anchor: start;
+}
+
+.door {
+    stroke: #64748b;
+    stroke-width: 2;
+    fill: none;
+}
+/* =========================================================
+   PARKING
+========================================================= */
+.parking_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 260px;
+}
+
+.img_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    border: #CFA54B;
+    box-shadow: 0 15px 30px rgba(207, 165, 75, 0.45);
+    margin-top: 30px;
+}
+
+.img_container .parking_qr {
+    display: block;
+    width: 250px;
+    height: auto;
+}
+
+
+/* =========================================================
+   TABLE HOVER EFFECT
+========================================================= */
+
+.floor_plan use {
+    transition:
+        transform 0.2s ease,
+        filter 0.2s ease;
+}
+
+
+/* =========================================================
+   PARKING BUTTON
+========================================================= */
+
+.parking_button {
+    border: none;
+    text-decoration: none;
+    background-color: #CFA54B;
+    padding: 10px 80px;
+    margin-top: 20px;
+    border-radius: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        filter 0.25s ease;
+}
+
+.parking_text {
+    
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+}
+
+.parking_button:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.08);
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.parking_button:active {
+    transform: translateY(0);
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (min-width: 600px) {
+
+    .container {
+        padding: 50px;
+    }
+
+    .container h1 {
+        font-size: 48px;
+    }
+
+    input,
+    button {
+        font-size: 18px;
+    }
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 1024px) {
+    .container {
+        width: 500px;
+        padding: 55px;
+    }
 
     .flip-back {
-        margin: 0px 0px;
-        padding: 20px;
+        padding-top: 35px;
+    }
+}
+
+
+@media (max-width: 599px) {
+
+    /* =========================================
+       MOBILE FRONT
+    ========================================= */
+
+    .bg-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("image/Foyer_vertical.jpg") !important;
+        background-size: cover;
+        background-position: center;
+        z-index: 0;
+    }
+
+    .header {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .container {
+        z-index: 2;
+        width: 90%;
+        max-width: 400px;
+        margin: auto;
+        padding: 32px 22px;
+        border-radius: 22px;
+        box-sizing: border-box;
+    }
+
+    .container h1 {
+        font-size: 34px;
+    }
+
+    .container p {
+        font-size: 15px;
+    }
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
     }
 
 
-    .flip-back .parking_title {
+    /* =========================================
+       MOBILE BACK
+    ========================================= */
 
-        font-size:
-            clamp(
-                28px,
-                8vw,
-                45px
-            );
+    .flip-back {
+        width: 100%;
+        min-height: 100%;
+        padding: 20px 10px 40px;
+        box-sizing: border-box;
+
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
-
-    .flip-back .parking_qr {
-        width: 220px;
-
-        max-width: 65vw;
-
-        margin: 25px auto;
+    .floor_plan_container {
+        width: 100%;
+        text-align: center;
     }
 
-
-    .flip-back h1 {
-
-        font-size: 25px;
+    .floor_plan_title {
+        margin: 0 0 10px;
+        font-size: 30px;
     }
 
+    .floor_plan {
+        display: block;
+
+        width: 100% !important;
+        max-width: 500px;
+        height: auto;
+
+        margin: 0 auto;
+    }
 
     #finalTableNumber {
-
+        margin: 10px 0;
         font-size: 40px;
     }
 
+    .parking_button {
+        display: inline-block;
+        margin-top: 15px;
+    }
+}
+
+
+/* =============================================
+   VERY SMALL PHONES
+============================================= */
+
+@media (max-width: 375px) {
+
+    .container {
+        width: 92%;
+        padding: 28px 18px;
+    }
+
+    .container h1 {
+        font-size: 30px;
+    }
+
+    .container p {
+        font-size: 14px;
+    }
+
+    input,
+    button {
+        padding: 13px;
+    }
+
+    .floor_plan {
+        width: 100% !important;
+    }
+
+    .floor_plan_title {
+        font-size: 27px;
+    }
+
+    #finalTableNumber {
+        font-size: 38px;
+    }
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

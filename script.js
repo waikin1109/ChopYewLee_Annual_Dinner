@@ -61,7 +61,7 @@ submitBtn.addEventListener("click", async () => {
 
 
                 welcomeName.textContent =
-                    `Welcome, ${result.name.toUpperCase()}!`;
+                    `Welcome!\n ${result.name.toUpperCase()}!`;
 
 
                 showText.textContent = "";
