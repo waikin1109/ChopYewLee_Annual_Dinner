@@ -56,16 +56,9 @@ submitBtn.addEventListener("click", async () => {
             // GUEST FOUND
 
             if (result.success) {
-
                 currentGuest = result;
-
-
-                welcomeName.textContent =
-                    `Welcome!\n ${result.name.toUpperCase()}!`;
-
-
+                welcomeName.innerHTML = `Welcome, <br>${result.name.toUpperCase()}!`;
                 showText.textContent = "";
-
 
                 // Hide login
                 loginSection.classList.add(
@@ -123,8 +116,9 @@ submitBtn.addEventListener("click", async () => {
 //
 // 1. Check the guest in
 // 2. Get their table number
-// 3. Show parking QR
-// 4. Flip the card
+// 3. Glow the guest's table on the floor plan
+// 4. Show parking QR
+// 5. Flip the card
 
 tableBtn.addEventListener(
     "click",
@@ -153,11 +147,8 @@ tableBtn.addEventListener(
                     API_URL,
                     {
                         method: "POST",
-
                         body: JSON.stringify({
-
                             action: "checkin",
-
                             row: currentGuest.row
 
                         })
@@ -183,8 +174,27 @@ tableBtn.addEventListener(
 
                 // Use table returned by API
                 finalTableNumber.textContent =
-                    `TABLE ${result.table}`;
+                    `Table No: ${result.table}`;
 
+                // Make the guest's table glow on the floor plan
+                document.querySelectorAll(".table-glow").forEach(el =>
+                    el.classList.remove("table-glow")
+                );
+
+                const tableId =
+                    `table-${String(result.table).trim().toLowerCase()}`;
+
+                const tableEl =
+                    document.getElementById(tableId);
+
+                if (tableEl) {
+                    tableEl.classList.add("table-glow");
+                } else {
+                    console.warn(
+                        "No matching SVG table found for id:",
+                        tableId
+                    );
+                }
 
                 // Hide welcome section
                 guestSection.classList.add(
