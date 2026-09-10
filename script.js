@@ -10,6 +10,44 @@ const tableBtn = document.getElementById("tableBtn");
 const finalTableNumber = document.getElementById("finalTableNumber");
 const flipCard = document.getElementById("flipCard");
 
+// Draw a pulsing ring around the guest's table on the floor plan.
+// Uses a real <circle> element (not a CSS filter on <use>) because
+// filters on <use> don't render reliably on mobile browsers.
+
+const svgNS = "http://www.w3.org/2000/svg";
+const floorPlanSvg = document.getElementById("floorPlanSvg");
+
+function clearTableGlow() {
+    const oldRing = document.getElementById("activeTableGlow");
+    if (oldRing) {
+        oldRing.remove();
+    }
+}
+
+function glowTable(tableId) {
+    clearTableGlow();
+
+    const tableEl = document.getElementById(tableId);
+
+    if (!tableEl) {
+        console.warn("No matching SVG table found for id:", tableId);
+        return;
+    }
+
+    const cx = tableEl.getAttribute("x");
+    const cy = tableEl.getAttribute("y");
+    const isVip = tableId === "table-vip";
+
+    const ring = document.createElementNS(svgNS, "circle");
+    ring.setAttribute("id", "activeTableGlow");
+    ring.setAttribute("cx", cx);
+    ring.setAttribute("cy", cy);
+    ring.setAttribute("r", isVip ? "30" : "24");
+    ring.setAttribute("class", "table-glow-ring");
+
+    floorPlanSvg.appendChild(ring);
+}
+
 // STORE CURRENT GUEST
 
 let currentGuest = null;
@@ -147,8 +185,11 @@ tableBtn.addEventListener(
                     API_URL,
                     {
                         method: "POST",
+
                         body: JSON.stringify({
+
                             action: "checkin",
+
                             row: currentGuest.row
 
                         })
@@ -177,24 +218,10 @@ tableBtn.addEventListener(
                     `Table No: ${result.table}`;
 
                 // Make the guest's table glow on the floor plan
-                document.querySelectorAll(".table-glow").forEach(el =>
-                    el.classList.remove("table-glow")
-                );
-
                 const tableId =
                     `table-${String(result.table).trim().toLowerCase()}`;
 
-                const tableEl =
-                    document.getElementById(tableId);
-
-                if (tableEl) {
-                    tableEl.classList.add("table-glow");
-                } else {
-                    console.warn(
-                        "No matching SVG table found for id:",
-                        tableId
-                    );
-                }
+                glowTable(tableId);
 
                 // Hide welcome section
                 guestSection.classList.add(
