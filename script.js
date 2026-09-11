@@ -1,4 +1,35 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzFLVQeRff5GEeQpBa5OyVl3teDLusjjmTD_IeyWVFQz4BcTR84WegTJtp8HEJYP_KKRQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbx_BWltn5Kbxw5FZrekOZJ6bW1CIcTRxnXL_GOuh70D1B1TczRmVe2gQAXnFlFbLr-g1w/exec";
+
+// Fetch with automatic retry AND a timeout — Google Apps Script + venue
+// signal can be slow or hang entirely, so force-cancel a stuck request
+// after a few seconds instead of leaving the button stuck forever.
+async function fetchWithRetry(url, options, retries = 2, delayMs = 1200, timeoutMs = 8000) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            return await response.json();
+        } catch (error) {
+            clearTimeout(timeoutId);
+            const isLastAttempt = attempt === retries;
+            const timedOut = error.name === "AbortError";
+            console.warn(
+                `Fetch attempt ${attempt + 1} failed${timedOut ? " (timed out)" : ""}:`,
+                error
+            );
+            if (isLastAttempt) {
+                throw error;
+            }
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+    }
+}
 
 const submitBtn = document.getElementById("submitBtn");
 const showText = document.getElementById("showText");
@@ -68,8 +99,8 @@ submitBtn.addEventListener("click", async () => {
 
         try {
 
-            const response =
-                await fetch(
+            const result =
+                await fetchWithRetry(
                     API_URL,
                     {
                         method: "POST",
@@ -80,10 +111,6 @@ submitBtn.addEventListener("click", async () => {
                         })
                     }
                 );
-
-
-            const result =
-                await response.json();
 
 
             console.log(
@@ -179,9 +206,8 @@ tableBtn.addEventListener(
 
             // CHECK IN
 
-
-            const response =
-                await fetch(
+            const result =
+                await fetchWithRetry(
                     API_URL,
                     {
                         method: "POST",
@@ -197,10 +223,6 @@ tableBtn.addEventListener(
                 );
 
 
-            const result =
-                await response.json();
-
-
             console.log(
                 "Check-in result:",
                 result
@@ -214,8 +236,8 @@ tableBtn.addEventListener(
             if (result.success) {
 
                 // Use table returned by API
-                finalTableNumber.textContent =
-                    `Table No: ${result.table}`;
+                finalTableNumber.textContent = `Table No: ${result.table}`;
+                finalTableNumber.style.color = "#fafafa";
 
                 // Make the guest's table glow on the floor plan
                 const tableId =

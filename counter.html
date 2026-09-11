@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Notifications</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            background: #CFA54B;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 18px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        #log {
+            margin-top: 30px;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .log-entry {
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .log-time {
+            display: block;
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Check-in Monitor</h1>
+    <button id="enableBtn">Enable Notifications</button>
+    <div id="status">Tap the button once to start.</div>
+    <div id="log"></div>
+
+    <script>
+        // Same Apps Script URL used by your main check-in page
+        const API_URL = "https://script.google.com/macros/s/AKfycbx_BWltn5Kbxw5FZrekOZJ6bW1CIcTRxnXL_GOuh70D1B1TczRmVe2gQAXnFlFbLr-g1w/exec";
+
+        const enableBtn = document.getElementById("enableBtn");
+        const statusEl = document.getElementById("status");
+        const logEl = document.getElementById("log");
+
+        let lastTime = new Date().toISOString();
+        let polling = null;
+
+        enableBtn.addEventListener("click", async () => {
+
+            if (!("Notification" in window)) {
+                statusEl.textContent = "This browser doesn't support notifications.";
+                return;
+            }
+
+            const permission = await Notification.requestPermission();
+
+            if (permission !== "granted") {
+                statusEl.textContent = "Notifications blocked — please allow them in browser settings and reload.";
+                return;
+            }
+
+            statusEl.textContent = "Listening for check-ins...";
+            enableBtn.disabled = true;
+            enableBtn.textContent = "Running";
+
+            if (polling) clearInterval(polling);
+            polling = setInterval(checkForNewCheckins, 5000);
+            checkForNewCheckins();
+
+        });
+
+        async function checkForNewCheckins() {
+
+            try {
+
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        action: "recentCheckins",
+                        sinceTime: lastTime
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+
+                    result.recent.forEach(person => {
+
+                        new Notification("Guest Checked In", {
+                            body: `${person.name} — Table ${person.table}`
+                        });
+
+                        const entry = document.createElement("div");
+                        entry.className = "log-entry";
+                        entry.innerHTML =
+                            `${person.name} — Table ${person.table}` +
+                            `<span class="log-time">${new Date(person.time).toLocaleTimeString()}</span>`;
+                        logEl.prepend(entry);
+
+                    });
+
+                    lastTime = result.serverTime;
+
+                }
+
+            } catch (error) {
+                console.warn("Polling error:", error);
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>
