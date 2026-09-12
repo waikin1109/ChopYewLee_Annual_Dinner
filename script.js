@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbx_BWltn5Kbxw5FZrekOZJ6bW1CIcTRxnXL_GOuh70D1B1TczRmVe2gQAXnFlFbLr-g1w/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyTtaUSGi4evF_NZI-0ujeAmxhAEt6NFna2ip8HPxNOzW1YgspyE9_OjrD6rEKHxbZdYw/exec";
 
 // Fetch with automatic retry AND a timeout — Google Apps Script + venue
 // signal can be slow or hang entirely, so force-cancel a stuck request
