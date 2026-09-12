@@ -1,8 +1,5 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyTtaUSGi4evF_NZI-0ujeAmxhAEt6NFna2ip8HPxNOzW1YgspyE9_OjrD6rEKHxbZdYw/exec";
 
-// Fetch with automatic retry AND a timeout — Google Apps Script + venue
-// signal can be slow or hang entirely, so force-cancel a stuck request
-// after a few seconds instead of leaving the button stuck forever.
 async function fetchWithRetry(url, options, retries = 2, delayMs = 1200, timeoutMs = 8000) {
     for (let attempt = 0; attempt <= retries; attempt++) {
         const controller = new AbortController();
@@ -37,6 +34,7 @@ const phoneInput = document.getElementById("phoneInput");
 const loginSection = document.getElementById("loginSection");
 const guestSection = document.getElementById("guestSection");
 const welcomeName = document.getElementById("welcomeName");
+const alreadyCheckedInNote = document.getElementById("alreadyCheckedInNote");
 const tableBtn = document.getElementById("tableBtn");
 const finalTableNumber = document.getElementById("finalTableNumber");
 const flipCard = document.getElementById("flipCard");
@@ -125,6 +123,16 @@ submitBtn.addEventListener("click", async () => {
                 welcomeName.innerHTML = `Welcome, <br>${result.name.toUpperCase()}!`;
                 showText.textContent = "";
 
+                // Let the guest know if they're just re-viewing, not
+                // checking in for the first time
+                if (result.alreadyCheckedIn) {
+                    alreadyCheckedInNote.classList.remove("hidden");
+                    tableBtn.textContent = "VIEW MY TABLE AGAIN";
+                } else {
+                    alreadyCheckedInNote.classList.add("hidden");
+                    tableBtn.textContent = "VIEW MY TABLE";
+                }
+
                 // Hide login
                 loginSection.classList.add(
                     "hidden"
@@ -179,7 +187,8 @@ submitBtn.addEventListener("click", async () => {
 //
 // Clicking this button will:
 //
-// 1. Check the guest in
+// 1. Check the guest in (or fetch their existing table if
+//    they already checked in earlier)
 // 2. Get their table number
 // 3. Glow the guest's table on the floor plan
 // 4. Show parking QR
@@ -260,7 +269,7 @@ tableBtn.addEventListener(
 
 
             // ---------------------------------
-            // ALREADY CHECKED IN
+            // FAILED
             // ---------------------------------
 
             else {
