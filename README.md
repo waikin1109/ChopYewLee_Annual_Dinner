@@ -10,3 +10,9 @@ Built With
 *JavaScript
 *SVG
 Google Sheet as backend.
+
+Use these numbers to try to check in
+1) 99999999
+2) 99999998
+3) 99999997
+4) 99999996
